@@ -11,12 +11,14 @@ const Header = () => {
   const [query, setQuery] = useState();
   const [result, setResult] = useState();
 
-  const [lat, setLat] = useState(result?.location?.lat);
-  const [long, setLong] = useState(result?.location?.lng);
+  const [lat, setLat] = useState();
+  const [long, setLong] = useState();
+
+  const zoom = 14;
 
   useEffect(() => {
     getLocation();
-  }, [query, lat, long]);
+  }, [query]);
 
   useEffect(() => {
     userIP();
@@ -33,6 +35,8 @@ const Header = () => {
       );
 
       await setResult(response.data);
+      setLat(response?.data?.location?.lat);
+      setLong(response?.data?.location?.lng);
     } catch (e) {
       console.log(e);
     }
@@ -48,10 +52,8 @@ const Header = () => {
         );
 
         await setResult(response.data);
-        await setLat(response.data.location.lat);
-        await setLong(response.data.location.lng);
-        console.log(lat)
-        console.log(long)
+        setLat(response?.data?.location?.lat);
+        setLong(response?.data?.location?.lng);
       } catch (e) {
         console.log(e);
       }
@@ -60,6 +62,7 @@ const Header = () => {
 
   const getSearch = (e) => {
     e.preventDefault();
+
     setQuery(inputVal);
     setInputVal("");
   };
@@ -110,7 +113,7 @@ const Header = () => {
           )}
         </div>
       </header>
-      {lat && long ? <IpAddressMap lat={lat} long={long} /> : ""}
+      {lat && long ? <IpAddressMap lat={lat} long={long} zoom={zoom} /> : ""}
     </main>
   );
 };
