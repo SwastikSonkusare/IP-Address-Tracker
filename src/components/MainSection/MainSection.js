@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import arrowImage from "../../assets/images/icon-arrow.svg";
 import axios from "axios";
 
-import "./Header.scss";
+import "./MainSection.scss";
 import IpAddressMap from "../IpAddressMap/IpAddressMap";
 
 const Header = () => {
