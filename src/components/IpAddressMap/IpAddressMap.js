@@ -1,70 +1,42 @@
-import React, { useMap, useEffect } from "react";
-
-import L from "leaflet";
+import React, { useState } from "react";
 import {
-  MapContainer,
-  TileLayer,
+  withScriptjs,
+  withGoogleMap,
+  GoogleMap,
   Marker,
-  Popup,
-  MapConsumer,
-} from "react-leaflet";
-
-import markerLogo from "../../assets/images/marker.png";
+  InfoWindow
+} from "react-google-maps";
 
 import "./IpAddressMap.scss";
-import "leaflet/dist/leaflet.css";
 const IpAddressMap = ({ lat, long, zoom }) => {
-  const position = [lat, long];
-
-  const markerIcon = new L.Icon({
-    iconUrl: markerLogo,
-    iconSize: [35, 45],
-    iconAnchor: [17, 45],
-    popupAnchor: [3, -46],
-  });
-
-  
-  const MyComponent = () => {
-    console.log(position)
-
-    return (
-      <MapConsumer>
-        <TileLayer
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <Marker position={position} icon={markerIcon}>
-          <Popup>You are here.</Popup>
-        </Marker>
-      </MapConsumer>
-    );
+  const position = {
+    lat: lat,
+    lng: long,
   };
 
+  const [select, setSelect] = useState(false);
 
-  // useEffect(() => {
+  const MyMapComponent = withScriptjs(
+    withGoogleMap((props) => (
+      <GoogleMap defaultZoom={zoom} defaultCenter={position}>
+        {props.isMarkerShown && <Marker position={position} onClick={() => setSelect(prevState => !prevState)} />}
 
-  //   MyComponent();
-  // }, []);
-
-
-  // const ChangeView = ({ center, zoom }) => {
-  //   let map = useMap();
-  //   // map.setView(center, zoom);
-  //   // return null;
-  // };
+        {select && (
+          <InfoWindow position={position}><div>You' re here!</div></InfoWindow>
+        )}
+      </GoogleMap>
+    ))
+  );
 
   return (
     <>
-      <MapContainer
-        id="map"
-        center={position}
-        zoom={zoom}
-        scrollWheelZoom={false}
-      >
-        {/* <ChangeView center={position} zoom={zoom} />  */}
-
-        <MyComponent />
-      </MapContainer>
+      <MyMapComponent
+        isMarkerShown
+        googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.REACT_APP_GOOGLE_KEY}`}
+        loadingElement={<div style={{ height: `100vh` }} />}
+        containerElement={<div style={{ height: `100vh` }} />}
+        mapElement={<div style={{ height: `100vh` }} />}
+      />
     </>
   );
 };
