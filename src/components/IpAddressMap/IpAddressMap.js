@@ -28,6 +28,7 @@ const IpAddressMap = ({ lat, long, zoom }) => {
     ))
   );
 
+
   return (
     <>
       <MyMapComponent
